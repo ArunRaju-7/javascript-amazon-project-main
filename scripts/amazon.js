@@ -6,7 +6,7 @@ products.forEach((prod)=>{
     <div class="product-container">
         <div class="product-image-container">
         <img class="product-image"
-            src="${prod.image}">
+            src="${(prod.image)}">
         </div>
 
         <div class="product-name limit-text-to-2-lines">
@@ -15,14 +15,14 @@ products.forEach((prod)=>{
 
         <div class="product-rating-container">
         <img class="product-rating-stars"
-            src="${prod.rating.stars}">
+            src="/images/ratings/rating-${(prod.rating.stars*10)}.png">
         <div class="product-rating-count link-primary">
             ${prod.rating.count}
         </div>
         </div>
 
         <div class="product-price">
-        $${(prod.pricecents / 100).toFixed(2)}
+        $${(prod.priceCents / 100).toFixed(2)}
         </div>
 
         <div class="product-quantity-container">
@@ -47,7 +47,7 @@ products.forEach((prod)=>{
         Added
         </div>
 
-        <button class="add-to-cart-button button-primary">
+        <button class="add-to-cart-button js-add-to-cart button-primary" data-product-id="${prod.id}">
         Add to Cart
         </button>
     </div>    
@@ -56,3 +56,32 @@ products.forEach((prod)=>{
 })
 
 document.querySelector('.js-products-grid').innerHTML = productHTML;
+
+document.querySelectorAll('.js-add-to-cart').forEach((button)=>{
+        button.addEventListener('click', ()=>{
+            const productId = button.dataset.productId;
+
+            let matchingItem;
+            cart.forEach((item)=>{
+                if(productId === item.productId){
+                    matchingItem = item;
+                }
+            })
+            if (matchingItem){
+                matchingItem.quantity += 1
+            }else{
+                cart.push({
+                    productId: productId,
+                    quantity: 1
+                })
+            }
+            
+            let cartQuantity = 0;
+            cart.forEach((item)=>{
+                cartQuantity += item.quantity;
+            })
+            
+            document.querySelector('.js-cart-quantity').innerHTML = cartQuantity;
+        }) 
+        
+    })
